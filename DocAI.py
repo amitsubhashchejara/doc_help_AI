@@ -45,7 +45,7 @@ TOKEN = os.getenv("T_bot_api_2")
 llm_name="gpt-3.5-turbo"
 llm=ChatOpenAI(model_name=llm_name, temperature=0, openai_api_key=os.getenv('api_key_openai_1'))
 
-BOT_ID = 6596826073
+BOT_ID = os.getenv("BOTID2")
 
 # DEFINING DIFFERENT FUNCTIONS FOR EVERY LIBRARY
 
