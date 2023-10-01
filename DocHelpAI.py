@@ -2,6 +2,7 @@
 
 # all the telegram bot modules
 import pathlib
+import tempfile
 from telegram import Update
 import os
 from telegram.ext import (
@@ -147,16 +148,15 @@ async def chat_with_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def download_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE):
     doc_file = await update.effective_message.effective_attachment.get_file()
-    file: pathlib.Path = (
-        await doc_file.download_to_drive()
-    )  # returns path to where file was downloaded
+    with tempfile.TemporaryDirectory() as tmp_dir_name:
+        path = pathlib.Path(tmp_dir_name) / str(update.effective_user.id)
+        file = await doc_file.download_to_drive(path)
 
-    # ------------------
-    # TODO: Process the document here:
-    await process_and_load_pdf(update, context, file)
+        # ------------------
+        # TODO: Process the document here:
+        await process_and_load_pdf(update, context, file)
 
-    context.user_data["document_uploaded"] = True
-    
+        context.user_data["document_uploaded"] = True
 
 
 async def process_and_load_pdf(
